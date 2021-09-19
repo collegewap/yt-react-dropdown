@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useRef, useState } from "react";
 
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const ref = useRef();
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      if (isMenuOpen && ref.current && !ref.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", checkIfClickedOutside);
+    return () => {
+      document.removeEventListener("click", checkIfClickedOutside);
+    };
+  }, [isMenuOpen]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper" ref={ref}>
+      <button className="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        Click Me
+      </button>
+      {isMenuOpen && (
+        <ul className="list">
+          <li className="list-item">Dropdown option 1</li>
+          <li className="list-item">Dropdown option 2</li>
+          <li className="list-item">Dropdown option 3</li>
+          <li className="list-item">Dropdown option 4</li>
+        </ul>
+      )}
     </div>
   );
 }
